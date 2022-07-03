@@ -1,4 +1,4 @@
-import { addExpense, addMoney, getTransactions } from "../controllers/walletController";
+import { addExpense, addMoney, getTransactions } from "../controllers/walletController.js";
 import validateUser from '../middlewares/validateUser.js';
 import { Router } from 'express';
 
