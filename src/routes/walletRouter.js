@@ -1,10 +1,11 @@
 import { addExpense, addMoney, getTransactions } from "../controllers/walletController";
+import validateUser from '../middlewares/validateUser.js';
 import { Router } from 'express';
 
 const router = Router();
 
-router.get('/wallet', getTransactions);
-router.post('/addMoney', addMoney);
-router.post('/expense', addExpense);
+router.get('/wallet', validateUser, getTransactions);
+router.post('/addMoney', validateUser, addMoney);
+router.post('/expense', validateUser, addExpense);
 
 export default router;
