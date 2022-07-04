@@ -34,8 +34,6 @@ export async function addMoney(req, res) {
   const validation = transactionSchema.validate(transaction);
 
   if (validation.error) {
-    console.log("Erro na validação:");
-    console.log(validation.error.message);
     return res.sendStatus(422);
   }
 
@@ -65,8 +63,6 @@ export async function addExpense(req, res) {
   const validation = transactionSchema.validate(transaction);
 
   if (validation.error) {
-    console.log("Erro na validação:");
-    console.log(validation.error.message);
     return res.sendStatus(422);
   }
 
