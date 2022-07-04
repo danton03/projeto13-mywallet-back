@@ -26,6 +26,10 @@ export async function createUser(req, res) {
 
   try {
     const passwordEncrypted = bcrypt.hashSync(password, 10);
+    const userExist = await db.collection('users').findOne({email});
+    if (userExist) {
+      return res.status(409).send("Usuário já cadastrado.");
+    }
     await db.collection('users').insertOne({
       name,
       email,
@@ -55,11 +59,15 @@ export async function login(req, res) {
     const user = await db.collection('users').findOne({ email });
 
     if (!user) {
-      res.status(404).send("Email ou senha inválida");
+      res.status(401).send("Email ou senha inválida");
       return;
     }
 
-    if (user && bcrypt.compareSync(password, user.password)) {
+    //comparação da senha
+    const comparePassword = bcrypt.compareSync(password, user.password);
+    console.log(comparePassword);
+
+    if (user && comparePassword) {
       const token = uuid();
       console.log("token: "+token);
       const session = await db.collection('sessions').findOne({ 
@@ -82,6 +90,9 @@ export async function login(req, res) {
         );
       }
       res.status(200).send({ name: user.name, token});
+    }
+    else{
+      res.status(401).send("Email ou senha inválida");
     }
   } catch (error) {
     res.status(500).send(error.message)

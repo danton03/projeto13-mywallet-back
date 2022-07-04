@@ -7,7 +7,7 @@ async function validateUser(req, res, next) {
   const session = await db.collection('sessions').findOne({ token });
 
   if (!session) {
-    res.status(401).send("Token inválido");
+    return res.status(401).send("Token de sessão do usuário expirado ou inválido. Faça login novamente.");
   }
 
   res.locals.session = session;

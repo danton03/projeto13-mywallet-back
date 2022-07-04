@@ -7,11 +7,11 @@ export async function getTransactions(_, res) {
   try {
     const transactions = await db
       .collection('transactions')
-      .find({ _id: new objectId(session.userId) })
+      .find({ userId: new objectId(session.userId) })
       .toArray();
-    res.status(200).send(transactions);
+    return res.status(200).send(transactions);
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 }
 
@@ -23,15 +23,20 @@ const transactionSchema = joi.object({
 
 export async function addMoney(req, res) {
   const session = res.locals.session;
-  const { amount, description } = req.body;
+  const { description } = req.body;
+  const amount = parseFloat(parseFloat(req.body.amount).toFixed(2));
+  const transaction = {
+    amount, 
+    description
+  }
+  
   const date = dayjs().locale('pt-br').format('DD/MM');
-  const validation = transactionSchema.validate(req.body);
+  const validation = transactionSchema.validate(transaction);
 
   if (validation.error) {
     console.log("Erro na validação:");
     console.log(validation.error.message);
-    res.sendStatus(422);
-    return;
+    return res.sendStatus(422);
   }
 
   try {
@@ -40,25 +45,29 @@ export async function addMoney(req, res) {
       date,
       description,
       amount,
-      type: "entrada"
+      type: "incoming"
     });
-    res.status(201).send("Entrada adicionada com sucesso");
+    return res.status(201).send("Entrada adicionada com sucesso");
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 }
 
 export async function addExpense(req, res) {
   const session = res.locals.session;
-  const { amount, description } = req.body;
+  const { description } = req.body;
+  const amount = parseFloat(parseFloat(req.body.amount).toFixed(2));
+  const transaction = {
+    amount, 
+    description
+  }
   const date = dayjs().locale('pt-br').format('DD/MM');
-  const validation = transactionSchema.validate(req.body);
+  const validation = transactionSchema.validate(transaction);
 
   if (validation.error) {
     console.log("Erro na validação:");
     console.log(validation.error.message);
-    res.sendStatus(422);
-    return;
+    return res.sendStatus(422);
   }
 
   try {
@@ -69,8 +78,8 @@ export async function addExpense(req, res) {
       amount,
       type: "expense"
     });
-    res.status(201).send("Despesa adicionada com sucesso");
+    return res.status(201).send("Despesa adicionada com sucesso");
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 }

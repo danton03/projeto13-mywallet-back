@@ -6,6 +6,6 @@ const router = Router();
 
 router.get('/wallet', validateUser, getTransactions);
 router.post('/addMoney', validateUser, addMoney);
-router.post('/expense', validateUser, addExpense);
+router.post('/addExpense', validateUser, addExpense);
 
 export default router;
