@@ -91,3 +91,19 @@ export async function login(req, res) {
     res.status(500).send(error.message)
   }
 }
+
+export async function logout(_, res) {
+  try {
+    const session = res.locals.session;
+
+    if (!session) {
+      await db.collection("sessions").deleteOne({token});
+      return res.sendStatus(200);
+    }
+    else{
+      res.status(401).send("Token inválido");
+    }
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+}
