@@ -97,7 +97,7 @@ export async function logout(_, res) {
     const session = res.locals.session;
 
     if (session) {
-      await db.collection("sessions").deleteOne({token});
+      await db.collection("sessions").deleteOne({session});
       return res.sendStatus(200);
     }
     else{
